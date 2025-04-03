@@ -6,3 +6,4 @@ export * from './Carrousel/Carrousel.tsx';
 export * from './SubButton/SubButton.tsx';
 export * from './SuscribeModal/SuscribeModal.tsx';
 export * from './SubForm/SubForm.tsx'
+export * from './CustomImput/CustomImput.tsx'
