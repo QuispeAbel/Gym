@@ -17,7 +17,7 @@ export const Navbar = ({isDarkMode, toggleDarkMode, isMenuOpen, setIsMenuOpen}:P
                     <img
                         className="h-8 w-auto"
                         src="https://static.vecteezy.com/system/resources/previews/003/108/337/original/fitness-gym-logo-with-strong-athlete-and-barbell-vector.jpg"
-                        alt="Gym Logo"
+                        alt="hola puto"
                     />
                     <span className="ml-2 text-xl font-bold text-gray-800 dark:text-white">GYM</span>
                 </div>

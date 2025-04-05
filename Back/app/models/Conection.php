@@ -32,8 +32,19 @@ class Conection{
         }
     }
 
-    public function query($sql){
+    public function query($sql, $data = [], $params = null){
+
+        if($data){
+            if($params == null){
+                $params = str_repeat('s', count($data));
+            }
+            $stms = $this->conection->prepare($sql);
+            $stms->bind_param($params, ...$data);
+            $stms->execute();
+            $this->query = $stms->get_result();
+        }else{
         $this->query = $this->conection->query($sql);
+    }
         return $this;
     }
 
@@ -55,8 +66,8 @@ class Conection{
 
     public function find($id)
     {
-        $sql = "SELECT * FROM $this->table WHERE $this->id = $id";
-        return $this->query($sql)->get();
+        $sql = "SELECT * FROM $this->table WHERE $this->id = ?";
+        return $this->query($sql,[$id],'i')->get();
     }
 
     public function insert()
@@ -70,40 +81,38 @@ class Conection{
             }
 
             $columns = implode(',', array_keys($data));
-            $values = implode("','", array_values($data));
+            //$values = implode("','", array_values($data));
+            $values = array_values($data);
+            $placeholder = implode(',',array_fill(0, count($values), '?'));
 
-            $sql = "INSERT INTO $this->table ($columns) VALUES ('$values')";
+            $sql = "INSERT INTO $this->table ($columns) VALUES ($placeholder)";
 
-            $this->query($sql);
-            return "La fila se ha insertado correctamente";
+            $this->query($sql, $values);
+             // Devuelve un JSON con éxito
+            header('Content-Type: application/json');
+            echo json_encode(["success" => true, "message" => "Usted se ha suscrito correctamente"]);
+        exit;
         } catch (Exception $e) {
-            return 'Error al insertar la fila: ' . $e->getMessage();
+            if (strpos($e->getMessage(), 'Duplicate entry') !== false && strpos($e->getMessage(), 'for key \'dni\'') !== false) {
+                http_response_code(400); // Bad Request
+                echo json_encode(["success" => false, "message" => "Ya existe una Suscripcion con ese DNI"]);
+            }
+            else {
+                http_response_code(500); // Internal Server Error
+                echo json_encode(["success" => false, "message" => "Error al insertar la fila: " . $e->getMessage()]);
+            }
         }
     }
 
-    public function update($id)
-    {
-        try {
-            $data = file_get_contents('php://input'); // Obtener datos JSON de la solicitud
-            $data = json_decode($data, true); // Decodificar JSON
+    // public function where($column, $operator, $value=null){
+    //     if($value == null){
+    //         $value = $operator;
+    //         $operator = '=';
+    //     }
 
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new Exception('Error al decodificar JSON: ' . json_last_error_msg());
-            }
-
-
-            $sql = "UPDATE $this->table SET ";
-            foreach ($data as $key => $value) {
-                $sql .= "$key = '$value',";
-            }
-            $sql .= " WHERE $this->id = $id";
-            $sql = str_replace(", WHERE", " WHERE", $sql);
-
-            $this->query($sql);
-            return "La fila se ha actualizado correctamente";
-        } catch (Exception $e) {
-            return 'Error al actualizar la fila: ' . $e->getMessage();
-        }
-    }
+    //     $sql = "SELECT * FROM {$this->table} WHERE {$column} {$operator} ?";
+    //     $this->query($sql, [$value], 's');
+    //     return $this;
+    // }
 }
 ?>
