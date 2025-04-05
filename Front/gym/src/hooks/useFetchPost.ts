@@ -16,15 +16,18 @@ export const useFetchPost = <T>(): Props<T> => {
     const [data, setData] = useState<Data<T>>(null);
 
     const fetchData = async(url: string, options?:RequestInit) =>{
-
+        setError(null); 
+        setLoading(true);
+        setData(null);
         try {
             const response = await fetch(url, options);
-            
-            if(!response.ok){
-                throw new Error("Error en la respuesta del servidor");
+            const responseData = await response.json(); 
+
+            if (!response.ok) {
+                throw new Error(responseData.message || "Error en la respuesta del servidor");
             }
-            const jsonData: T = await response.json();
-            setData(jsonData);
+
+            setData(responseData);
 
         } catch (err) {
             setError(err as Error);
