@@ -14,7 +14,7 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 export const SubForm = () =>{
-    const {fetchData, error} = useFetchPost<JSON>();
+    const {fetchData, error, data} = useFetchPost<{success: boolean; message: string}>();
     const url = 'http://gym.test/clienteIns';
     
     const {control, handleSubmit, formState: {errors}} = useForm<FormValues>({
@@ -22,14 +22,12 @@ export const SubForm = () =>{
     });
 
     const onSubmit: SubmitHandler<FormValues> = (data) =>{
-        console.log(JSON.stringify(data));
         fetchData(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(data),})
-        {error && console.log(error)}
     }
 
     return(
@@ -37,6 +35,8 @@ export const SubForm = () =>{
         <CustomImput name='nombre' control={control} label='Name' type='text' error={errors.nombre}/>
         <CustomImput name='email' control={control} label='Email' type='email' error={errors.email}/>
         <CustomImput name='dni' control={control} label='DNI' type='number' error={errors.dni}/>        
+        {error && <p className='text-red-500 text-sm'>{error?.message}</p>}
+        {data != null && <p className='text-green-500 text-sm'>{data?.message}</p>}
         <button type='submit' className='w-full bg-gray-500 text-white py-2 rounded-md hover:bg-gray-600 transition-colors'>Sucribirme</button>
     </form>);
 }
