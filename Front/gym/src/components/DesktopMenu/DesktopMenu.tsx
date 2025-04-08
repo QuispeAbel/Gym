@@ -11,11 +11,8 @@ export const DesktopMenu = ({isDarkMode, toggleDarkMode}:Props) => {
               <button className="text-gray-600 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
                 Sobre Nosotros
               </button>
-              <button className="text-gray-600 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
-                Iniciar Sesión
-              </button>
               <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors">
-                Registrarse
+                Abonar
               </button>
               <button
                 onClick={toggleDarkMode}
