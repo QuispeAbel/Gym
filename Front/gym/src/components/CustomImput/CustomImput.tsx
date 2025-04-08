@@ -16,6 +16,7 @@ export const CustomImput = ({name, control, label, type, error}: Props) => {
         <Controller 
             name={name} 
             control={control} 
+            defaultValue={""}
             render={({field}) => <input id={name} type={type} {...field} className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${ error ? "tail2" : ""}`}/>}/>
         {error && <p className="text-sm font-small text-red-700 dark:text-red-300 mb-1">{error.message}</p>}
     </div>
